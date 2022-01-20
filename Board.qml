@@ -1,12 +1,31 @@
 import QtQuick 2.0
 import QtQml.Models 2.15
 import QtQuick.Controls 2.12
+import BoardController 1.0
 
 Rectangle {
     id: root
 
     anchors.margins: 20
     color: "khaki"
+
+    signal mix()
+
+    onMix: {
+        boardModel.mix();
+    }
+
+    BoardModel {
+        id: boardModel
+        onWin: {
+            victoryDialog.open()
+        }
+    }
+
+    VictoryDialog {
+        id: victoryDialog
+        onVictory: mix()
+    }
 
     Rectangle {
         anchors.margins: 20
@@ -17,51 +36,30 @@ Rectangle {
             id: grid
 
             interactive: false
-            model: 16
+            model: boardModel
 
             anchors.fill: parent
             anchors.margins: 5
-            cellHeight: height / 4
-            cellWidth: width / 4
+            cellHeight: height / boardModel.row()
+            cellWidth: width / boardModel.column()
 
-            move: Transition {
-                NumberAnimation { properties: "x"; duration: 500 }
-                NumberAnimation { properties: "y"; duration: 500 }
-            }
-
-            Dialog {
-                id: victoryDialog
-
-                x: (parent.width - width) / 2
-                y: (parent.height - height) / 2
-                parent: Overlay.overlay
-                modal: true
-                title: "Restart the game"
-                standardButtons: Dialog.Close | Dialog.Reset
-
-                Column {
-                    anchors.fill: parent
-                    spacing: 4
-                    Label {
-                        text: "Сongratulations!"
-                        color: "red"
-                        font.pixelSize: 24
-                    }
-                    Label {
-                        text: "You are a winner"
-                        font.pixelSize: 18
-                    }
-                }
-
-                onReset: {
-                     victoryDialog.close()
-                }
+            displaced: Transition {
+                id: animation
+                NumberAnimation { properties: "x"; duration: 1000; property: "visible"}
+                NumberAnimation { properties: "y"; duration: 1000 ; property: "visible"}
             }
 
             delegate: Cell {
                 id: cell
+                text: model.value
                 width: grid.cellWidth
                 height: grid.cellHeight
+                opacity: (model.value !== 0) ? 1 : 0
+                onItemCliced: {
+                    if(boardModel.takeStep(index)){
+                        //TODO Transition
+                    }
+                }
             }
         }
     }

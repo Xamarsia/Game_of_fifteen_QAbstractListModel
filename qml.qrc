@@ -5,5 +5,7 @@
         <file>Cell.qml</file>
         <file>Board.qml</file>
         <file>MixButton.qml</file>
+        <file>RestartGameDialog.qml</file>
+        <file>VictoryDialog.qml</file>
     </qresource>
 </RCC>
