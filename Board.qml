@@ -43,10 +43,9 @@ Rectangle {
             cellHeight: height / boardModel.row()
             cellWidth: width / boardModel.column()
 
-            displaced: Transition {
-                id: animation
-                NumberAnimation { properties: "x"; duration: 1000; property: "visible"}
-                NumberAnimation { properties: "y"; duration: 1000 ; property: "visible"}
+            move: Transition {
+                NumberAnimation { properties: "x"; duration: 500; property: "visible"}
+                NumberAnimation { properties: "y"; duration: 500 ; property: "visible"}
             }
 
             delegate: Cell {
@@ -56,11 +55,9 @@ Rectangle {
                 height: grid.cellHeight
                 opacity: (model.value !== 0) ? 1 : 0
                 onItemCliced: {
-                    if(boardModel.takeStep(index)){
-                        //TODO Transition
-                    }
+                    boardModel.takeStep(index)
                 }
             }
-        }
+        } 
     }
 }
